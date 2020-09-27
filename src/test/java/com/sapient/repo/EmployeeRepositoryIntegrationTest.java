@@ -2,6 +2,9 @@ package com.sapient.repo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -96,4 +99,65 @@ public class EmployeeRepositoryIntegrationTest {
         .hasSize(3)
         .extracting(Employee::getName).containsOnly(alex.getName(), ron.getName(), bob.getName());
     }
+    @Test
+	public void givenSetOfEmployees_whenfindByJobAndSalary_thenReturnEmployee() throws ParseException {
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse("2020/01/01");
+		Employee alex = new Employee("alex", date1, "manager", 12000.0);
+		Employee ron = new Employee("ron", date1, "clerk", 11000.0);
+		Employee don = new Employee("don", date1, "clerk", 11000.0);
+
+		entityManager.persist(alex);
+		entityManager.persist(ron);
+		entityManager.persist(don);
+		entityManager.flush();
+
+		List<Employee> employees = employeeRepository.findByJobAndSalary("clerk", 11000.0);
+		assertThat(employees).extracting(Employee::getName).containsOnly(ron.getName(), don.getName());
+	}
+
+	@Test
+	public void givenSetOfEmployees_whenfindByJobAndSalary_whenInvalidJobAndSalary_thenReturnNull()
+			throws ParseException {
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse("2020/01/01");
+		Employee alex = new Employee("alex", date1, "manager", 12000.0);
+		entityManager.persist(alex);
+		entityManager.flush();
+
+		List<Employee> employees = employeeRepository.findByJobAndSalary("manager", -11000.0);
+		assertThat(employees).hasSize(0);
+		employees = employeeRepository.findByJobAndSalary("clerk", -11000.0);
+		assertThat(employees).hasSize(0);
+	}
+
+	@Test
+	public void givenSetOfEmployees_findByJobAndSalaryGreaterThan_thenReturnEmployees() throws ParseException {
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse("2020/01/01");
+		Employee alex = new Employee("alex", date1, "manager", 12000.0);
+		Employee ron = new Employee("ron", date1, "clerk", 10000.0);
+		Employee don = new Employee("don", date1, "clerk", 11000.0);
+
+		entityManager.persist(alex);
+		entityManager.persist(ron);
+		entityManager.persist(don);
+		entityManager.flush();
+
+		List<Employee> employees = employeeRepository.findByJobAndSalaryGreaterThan("clerk", 9000.0);
+
+		assertThat(employees).extracting(Employee::getName).containsOnly(ron.getName(), don.getName());
+	}
+
+	@Test
+	public void givenSetOfEmployees_findByJobAndSalaryGreaterThan_whenInvalidJobAndSalary_thenReturnNull()
+			throws ParseException {
+		Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse("2020/01/01");
+		Employee alex = new Employee("alex", date1, "manager", 12000.0);
+		entityManager.persistAndFlush(alex);
+
+		List<Employee> employees = employeeRepository.findByJobAndSalaryGreaterThan("manager", 13000.0);
+		assertThat(employees).hasSize(0);
+
+		employees = employeeRepository.findByJobAndSalaryGreaterThan("clerk", 110000.0);
+		assertThat(employees).hasSize(0);
+
+	}
 }
