@@ -13,21 +13,9 @@ pipeline {
 			echo 'Project Testing stage'
 			bat label: 'Test running', script: '''mvn test'''
 	       
-       }
+            }
    	}
 	
-	/*
-	stage('Publish Test Coverage Report') {
-         steps {
-           step([$class: 'JacocoPublisher', 
-                execPattern: '**/build/jacoco/*.exec',
-                classPattern: '**/build/classes',
-                sourcePattern: 'src/main/java',
-                exclusionPattern: 'src/test*'
-                ])
-            }
-        }
-        */
         
     stage('Jacoco Coverage Report') {
         steps{
@@ -41,6 +29,7 @@ pipeline {
 		 -Dsonar.host.url=http://localhost:9000 \
  		-Dsonar.login=4d328600f95bc47c74548fb262e35bffbb7ed3c7'''
           }
+	}
 	
 	stage('Maven Package'){
 		steps{
