@@ -2,6 +2,7 @@
 
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Api
-<span class="fc" id="L26">@Slf4j </span>
+<span class="fc" id="L27">@Slf4j </span>
 @RestController
 @RequestMapping(&quot;/api&quot;)
 @CrossOrigin
-<span class="fc" id="L30">public class EmployeeRestController {</span>
+<span class="fc" id="L31">public class EmployeeRestController {</span>
 
 	@Autowired
 	private EmployeeService employeeService;
@@ -50,11 +51,11 @@ import lombok.extern.slf4j.Slf4j;
 	public ResponseEntity&lt;Employee&gt; createEmployee(@RequestBody Employee employee) {
 
 		try {
-<span class="fc" id="L53">			Employee saved = employeeService.save(employee);</span>
-<span class="fc" id="L54">			return new ResponseEntity&lt;&gt;(saved, HttpStatus.CREATED);</span>
-<span class="nc" id="L55">		}catch(EmployeeException e) {</span>
-<span class="nc" id="L56">			log.error(e.getMessage(), e);</span>
-<span class="nc" id="L57">			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());</span>
+<span class="fc" id="L54">			Employee saved = employeeService.save(employee);</span>
+<span class="fc" id="L55">			return new ResponseEntity&lt;&gt;(saved, HttpStatus.CREATED);</span>
+<span class="nc" id="L56">		}catch(EmployeeException e) {</span>
+<span class="nc" id="L57">			log.error(e.getMessage(), e);</span>
+<span class="nc" id="L58">			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());</span>
 		}
 	}
 
@@ -65,11 +66,11 @@ import lombok.extern.slf4j.Slf4j;
 	@GetMapping(&quot;/employees&quot;)
 	public ResponseEntity&lt;List&lt;Employee&gt;&gt; getAllEmployees() {
 		try {
-<span class="fc" id="L68">			List&lt;Employee&gt; employeeList = employeeService.getAllEmployees();</span>
-<span class="fc" id="L69">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.CREATED);</span>
-<span class="nc" id="L70">		}catch(EmployeeException e) {</span>
-<span class="nc" id="L71">			log.error(e.getMessage(), e);</span>
-<span class="nc" id="L72">			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());</span>
+<span class="fc" id="L69">			List&lt;Employee&gt; employeeList = employeeService.getAllEmployees();</span>
+<span class="fc" id="L70">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.CREATED);</span>
+<span class="nc" id="L71">		}catch(EmployeeException e) {</span>
+<span class="nc" id="L72">			log.error(e.getMessage(), e);</span>
+<span class="nc" id="L73">			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());</span>
 		}
 	}
 
@@ -80,11 +81,11 @@ import lombok.extern.slf4j.Slf4j;
 	@GetMapping(&quot;/employees/{job}/{salary}&quot;)
 	public ResponseEntity&lt;List&lt;Employee&gt;&gt; findByJobAndSalaryGreaterThan(@PathVariable String job, @PathVariable Double salary){
 		try {
-<span class="nc" id="L83">			List&lt;Employee&gt; employeeList = employeeService.findByJobAndSalaryGreaterThan(job, salary);</span>
-<span class="nc" id="L84">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.OK);</span>
-<span class="nc" id="L85">		}catch(EmployeeException e) {</span>
-<span class="nc" id="L86">			log.error(e.getMessage(), e);</span>
-<span class="nc" id="L87">			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());</span>
+<span class="nc" id="L84">			List&lt;Employee&gt; employeeList = employeeService.findByJobAndSalaryGreaterThan(job, salary);</span>
+<span class="nc" id="L85">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.OK);</span>
+<span class="nc" id="L86">		}catch(EmployeeException e) {</span>
+<span class="nc" id="L87">			log.error(e.getMessage(), e);</span>
+<span class="nc" id="L88">			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());</span>
 		}
 	}
 	
@@ -92,11 +93,11 @@ import lombok.extern.slf4j.Slf4j;
 	@GetMapping(&quot;/employee/{job}/{salary}&quot;)
 	public ResponseEntity&lt;List&lt;Employee&gt;&gt; findByJobAndSalary(@PathVariable String job, @PathVariable Double salary){
 		try {
-<span class="nc" id="L95">			List&lt;Employee&gt; employeeList = employeeService.findByJobAndSalary(job, salary);</span>
-<span class="nc" id="L96">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.OK);</span>
-<span class="nc" id="L97">		}catch(EmployeeException e) {</span>
-<span class="nc" id="L98">			log.error(e.getMessage(), e);</span>
-<span class="nc" id="L99">			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());</span>
+<span class="nc" id="L96">			List&lt;Employee&gt; employeeList = employeeService.findByJobAndSalary(job, salary);</span>
+<span class="nc" id="L97">			return new ResponseEntity&lt;&gt;(employeeList, HttpStatus.OK);</span>
+<span class="nc" id="L98">		}catch(EmployeeException e) {</span>
+<span class="nc" id="L99">			log.error(e.getMessage(), e);</span>
+<span class="nc" id="L100">			throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage());</span>
 		}
 	}
 	
@@ -107,10 +108,10 @@ import lombok.extern.slf4j.Slf4j;
 	@GetMapping(&quot;/employees/{id}&quot;)
 	public Employee getEmployeeById(@PathVariable Long id){		
 		try {
-<span class="nc" id="L110">			return employeeService.getEmployeeById(id);</span>
-<span class="nc" id="L111">		}catch(EmployeeException e) {</span>
-<span class="nc" id="L112">			log.error(e.getMessage(), e);</span>
-<span class="nc" id="L113">			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());</span>
+<span class="nc" id="L111">			return employeeService.getEmployeeById(id);</span>
+<span class="nc" id="L112">		}catch(EmployeeException e) {</span>
+<span class="nc" id="L113">			log.error(e.getMessage(), e);</span>
+<span class="nc" id="L114">			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,e.getMessage());</span>
 		}
 	}
 
