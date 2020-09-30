@@ -30,13 +30,7 @@ pipeline {
  		-Dsonar.login=4d328600f95bc47c74548fb262e35bffbb7ed3c7'''
           }
 	}
-	stage("Quality Gate") {
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-          }
+	
 	stage('Maven Package'){
 		steps{
 			echo 'Project packaging stage'
