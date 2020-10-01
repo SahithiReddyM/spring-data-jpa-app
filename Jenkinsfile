@@ -45,10 +45,17 @@ pipeline {
         success {
             emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
         }
-	     failure {
-        mail to: 'vibrantone23@gmail.com',
-             subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body:"""Something is wrong with ${env.BUILD_URL} \n <p>Console output (last 250 lines):<hr><pre>\${BUILD_LOG}</pre></p>"""
+	     
+    failure{
+    emailext attachLog: true,
+                    body: "Build failed" +
+                            "<br> See attached log or URL:<br>${env.BUILD_URL}" +
+                            "<br><br> <b>The end of build log is:</b> <br>" +
+                            currentBuild.rawBuild.getLog(15).join("<br>"),
+
+                    mimeType: 'text/html',
+                    subject: "Build failed",
+                    to: 'vibrantone23@gmail.com'
     }
     }
 }
