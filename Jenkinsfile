@@ -1,6 +1,7 @@
 pipeline {
   agent any
   stages {
+  try{
   
 	stage('Maven Compile'){
 		steps{
@@ -38,7 +39,9 @@ pipeline {
 			bat label: 'Project packaging', script: '''mvn package'''
 		}
 	}
-  	
+  }catch(e){
+      env.ERROR="${e}"
+  }
     
   }
   environment {
@@ -49,7 +52,7 @@ pipeline {
             emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
         }
 	    failure {
-            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=1, escapeHtml=false} \n ${env.ERROR}', 
                     to: "${EMAIL_TO}", 
                     subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
         }
