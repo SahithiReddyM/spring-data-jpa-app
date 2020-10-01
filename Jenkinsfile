@@ -1,7 +1,8 @@
 pipeline {
   agent any
-  try{
   stages {
+  script{
+  try{
   
 	stage('Maven Compile'){
 		steps{
@@ -41,9 +42,10 @@ pipeline {
 	}
   
     
-  }
   }catch(e){
-      env.ERROR="${e}"
+     env.ERROR="${e}"
+  }
+  }
   }
   environment {
         EMAIL_TO = 'vibrantone23@gmail.com'
