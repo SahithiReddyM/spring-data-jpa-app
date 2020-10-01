@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-
+  
 	stage('Maven Compile'){
 		steps{
 			echo 'Project compile stage'
@@ -38,7 +38,7 @@ pipeline {
 			bat label: 'Project packaging', script: '''mvn package'''
 		}
 	}
-  
+  	
     
   }
   post {
@@ -48,7 +48,7 @@ pipeline {
 	     failure {
         mail to: 'mallusahithireddy5@gmail.com',
              subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-             body: "Something is wrong with ${env.BUILD_URL} ${BUILD_LOG, maxLines=100, escapeHtml=false}"
+             body: "Something is wrong with ${env.BUILD_URL} ${BUILD_LOG}"
     }
     }
 }
