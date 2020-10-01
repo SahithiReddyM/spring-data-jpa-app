@@ -41,6 +41,9 @@ pipeline {
   	
     
   }
+  environment {
+        EMAIL_TO = 'vibrantone23@gmail.com'
+    }
   post {
         success {
             emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
