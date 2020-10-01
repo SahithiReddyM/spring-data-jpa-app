@@ -1,7 +1,7 @@
 pipeline {
   agent any
-  stages {
   try{
+  stages {
   
 	stage('Maven Compile'){
 		steps{
@@ -39,10 +39,11 @@ pipeline {
 			bat label: 'Project packaging', script: '''mvn package'''
 		}
 	}
+  
+    
+  }
   }catch(e){
       env.ERROR="${e}"
-  }
-    
   }
   environment {
         EMAIL_TO = 'vibrantone23@gmail.com'
