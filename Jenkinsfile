@@ -45,17 +45,11 @@ pipeline {
         success {
             emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
         }
-	     
-    failure{
-    emailext attachLog: true,
-                    body: "Build failed" +
-                            "<br> See attached log or URL:<br>${env.BUILD_URL}" +
-                            "<br><br> <b>The end of build log is:</b> <br>" +
-                            currentBuild.rawBuild.getLog(15).join("<br>"),
-
-                    mimeType: 'text/html',
-                    subject: "Build failed",
-                    to: 'vibrantone23@gmail.com'
-    }
+	    failure {
+            emailext body: 'Check console output at $BUILD_URL to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}', 
+                    to: "${EMAIL_TO}", 
+                    subject: 'Build failed in Jenkins: $PROJECT_NAME - #$BUILD_NUMBER'
+        }
+    
     }
 }
