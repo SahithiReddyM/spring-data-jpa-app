@@ -24,13 +24,27 @@ pipeline {
 		}
 	}
         
+	
 	stage('SonarQube'){
+
          steps{
-            bat label: '', script: '''mvn sonar:sonar \
-		 -Dsonar.host.url=http://3.238.72.11:9000 \
- 		-Dsonar.login=5623afa01d36ee21531aade59a92bcf60e4c212d'''
+		 withSonarQubeEnv('SonarQube') {
+
+            bat label: '', script: '''mvn sonar:sonar'''
+
           }
+	 }
+
 	}
+	   stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
+                    // true = set pipeline to UNSTABLE, false = don't
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
 	
 	stage('Maven Package'){
 		steps{
