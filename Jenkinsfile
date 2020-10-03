@@ -1,83 +1,63 @@
 pipeline {
-    agent any
-    stages {
-    
-    	
-		stage('Maven Compile'){
-			steps{
+  agent any
+  stages {
+  
+	stage('Maven Compile'){
+		steps{
+			echo 'Project compile stage'
+			bat label: 'Compilation running', script: '''mvn compile'''
+	       	}
+	}
 	
-				echo 'Project compile stage'
-	
-				sh 'mvn compile'
-	
-		       	}
-	
-		}
-
-		stage('Unit Test') {
-	
-		   steps {
-	
-				echo 'Project Testing stage'
-	
-				sh 'mvn test'
-	
-		       
-	
-	       		}
-	
-	   	}
-
-	  
-		stage('Jacoco Coverage Report') {
-	
-	        steps{
-	        	
-	        	sh 'mvn verify'
-	            jacoco()
-	
-			}
-	
-		}
-	    
-	    stage('SonarQube'){
-
-	         steps{
-			 withSonarQubeEnv('SonarQube2') {
-	
-	            sh '''mvn sonar:sonar \
-					 -Dsonar.host.url=http://35.175.103.228:9000 \
-	 				-Dsonar.login=5623afa01d36ee21531aade59a92bcf60e4c212d'''
-	
-          			}	
-	   		 }
-
-		}
-		stage("Quality Gate") {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
-                    // true = set pipeline to UNSTABLE, false = don't
-                    waitForQualityGate abortPipeline: true
-                }
+	stage('Unit Test') {
+	   steps {
+			echo 'Project Testing stage'
+			bat label: 'Test running', script: '''mvn test'''
+	       
             }
-        }
-
-
+   	}
+	
         
-        stage('Maven Package'){
+    stage('Jacoco Coverage Report') {
+        steps{
+            jacoco()
+		}
+	}
+        
+	
+	stage('SonarQube'){
 
-			steps{
-	
-				echo 'Project packaging stage'
-	
-				sh 'mvn package'
-	
-			}
+         steps{
+		 withSonarQubeEnv('SonarQube') {
 
-		} 	
+            bat label: '', script: '''mvn sonar:sonar'''
+
+          }
+	 }
+
+	}
+	   stage('Quality Gate'){
+
+        timeout(time: 10, unit: ‘MINUTES’) {
+              def qg= waitForQualityGate()
+            if (qg.status!= ‘OK’){
+                error “Pipeline aborted due to quality gate failure: ${qg.status}”
+            }
+        }         
+              echo ‘Quality Gate Passed’
+
     }
-	environment {
+	
+	stage('Maven Package'){
+		steps{
+			echo 'Project packaging stage'
+			bat label: 'Project packaging', script: '''mvn package'''
+		}
+	}
+  	
+    
+  }
+  environment {
         EMAIL_TO = 'mallusahithireddy5@gmail.com'
     }
   post {
@@ -92,16 +72,3 @@ pipeline {
     
     }
 }
-
-
-stage('SonarQube'){
-
-         steps{
-		 withSonarQubeEnv('SonarQube') {
-
-            bat label: '', script: '''mvn sonar:sonar'''
-
-          }
-	 }
-
-	}
