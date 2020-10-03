@@ -35,6 +35,7 @@ pipeline {
 
 		}
 	 }
+	}
 		stage('Quality Gate'){
 
         timeout(time: 10, unit: ‘MINUTES’) {
