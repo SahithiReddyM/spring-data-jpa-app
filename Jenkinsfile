@@ -34,6 +34,7 @@ pipeline {
             bat label: '', script: '''mvn sonar:sonar'''
 
 		}
+	 }
 		stage('Quality Gate'){
 
         timeout(time: 10, unit: ‘MINUTES’) {
