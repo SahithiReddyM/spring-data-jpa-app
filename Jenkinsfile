@@ -1,42 +1,59 @@
 pipeline {
-  agent any
-  stages {
-  
-	stage('Maven Compile'){
-		steps{
-			echo 'Project compile stage'
-			bat label: 'Compilation running', script: '''mvn compile'''
-	       	}
-	}
+    agent any
+    stages {
+    
+    	
+		stage('Maven Compile'){
+			steps{
 	
-	stage('Unit Test') {
-	   steps {
-			echo 'Project Testing stage'
-			bat label: 'Test running', script: '''mvn test'''
-	       
-            }
-   	}
+				echo 'Project compile stage'
 	
-        
-    stage('Jacoco Coverage Report') {
-        steps{
-            jacoco()
+				sh 'mvn compile'
+	
+		       	}
+	
 		}
-	}
-        
+
+		stage('Unit Test') {
 	
-	stage('SonarQube'){
+		   steps {
+	
+				echo 'Project Testing stage'
+	
+				sh 'mvn test'
+	
+		       
+	
+	       		}
+	
+	   	}
 
-         steps{
-		 withSonarQubeEnv('SonarQube') {
+	  
+		stage('Jacoco Coverage Report') {
+	
+	        steps{
+	        	
+	        	sh 'mvn verify'
+	            jacoco()
+	
+			}
+	
+		}
+	    
+	    stage('SonarQube'){
 
-            bat label: '', script: '''mvn sonar:sonar'''
+	         steps{
+			 withSonarQubeEnv('SonarQube2') {
+	
+	            sh '''mvn sonar:sonar \
+					 -Dsonar.host.url=http://35.175.103.228:9000 \
+	 				-Dsonar.login=5623afa01d36ee21531aade59a92bcf60e4c212d'''
+	
+          			}	
+	   		 }
 
-          }
-	 }
-
-	}
-	   stage("Quality Gate") {
+		}
+		stage("Quality Gate") {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
                     // Parameter indicates whether to set pipeline to UNSTABLE if Quality Gate fails
@@ -45,17 +62,22 @@ pipeline {
                 }
             }
         }
+
+
+        
+        stage('Maven Package'){
+
+			steps{
 	
-	stage('Maven Package'){
-		steps{
-			echo 'Project packaging stage'
-			bat label: 'Project packaging', script: '''mvn package'''
-		}
-	}
-  	
-    
-  }
-  environment {
+				echo 'Project packaging stage'
+	
+				sh 'mvn package'
+	
+			}
+
+		} 	
+    }
+	environment {
         EMAIL_TO = 'mallusahithireddy5@gmail.com'
     }
   post {
@@ -70,3 +92,16 @@ pipeline {
     
     }
 }
+
+
+stage('SonarQube'){
+
+         steps{
+		 withSonarQubeEnv('SonarQube') {
+
+            bat label: '', script: '''mvn sonar:sonar'''
+
+          }
+	 }
+
+	}
